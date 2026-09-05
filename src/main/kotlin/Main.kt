@@ -120,5 +120,29 @@ fun main() {
     println(moderna)
     println(vr)
 
+val consolas: List<Consola> = listOf(
+    ConsolaClasica(
+        "CC12CD",
+        "Sony",
+        "PlayStation 5",
+        "socio"
+    ),
+    ConsolaModerna(
+        "CM22TO",
+        "Nintendo",
+        "Switch",
+        "infantil"
+    ),
+    ConsolaVR(
+        "VR44RG",
+        "Meta",
+        "Quest 3",
+        "educacional",
+        true
+    )
+)
+    consola.calcularTarifa(...)
+
+
 
 }
