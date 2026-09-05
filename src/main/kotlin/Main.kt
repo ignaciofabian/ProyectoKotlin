@@ -94,11 +94,31 @@ fun main() {
 
 
 
+    val clasica = ConsolaClasica(
+        "CC12CD",
+        "Sony",
+        "PlayStation 5",
+        "socio"
+    )
 
+    val moderna = ConsolaModerna(
+        "CM22TO",
+        "Nintendo",
+        "Switch",
+        "infantil"
+    )
 
+    val vr = ConsolaVR(
+        "VR44RG",
+        "Meta",
+        "Quest 3",
+        "educacional",
+        true
+    )
 
-
-
+    println(clasica)
+    println(moderna)
+    println(vr)
 
 
 }
