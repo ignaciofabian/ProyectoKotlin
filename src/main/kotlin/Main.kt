@@ -143,6 +143,24 @@ val consolas: List<Consola> = listOf(
 )
     consola.calcularTarifa(...)
 
+    fun main() {
+
+        val puesto = Puesto(1)
+
+        println(describirEstado(puesto))
+
+        puesto.estado = EstadoPuesto.EnProceso(
+            "registrando entrada"
+        )
+
+        println(describirEstado(puesto))
+
+        puesto.estado = EstadoPuesto.EnReparacion(
+            "mantenimiento preventivo"
+        )
+
+        println(describirEstado(puesto))
+    }
 
 
 }
