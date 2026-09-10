@@ -162,5 +162,63 @@ val consolas: List<Consola> = listOf(
         println(describirEstado(puesto))
     }
 
+    fun main() {
+
+        // Crear los 10 puestos
+        val puestos: MutableList<Puesto> = mutableListOf()
+
+        for (numero in 1..10) {
+            puestos.add(Puesto(numero))
+        }
+
+        // Mostrar los 10 puestos
+        for (puesto in puestos) {
+            println(
+                "Puesto ${puesto.numero}: " +
+                        describirEstado(puesto)
+            )
+        }
+
+        // Buscar el primer puesto libre
+        var puestoLibre: Puesto? = null
+
+        for (puesto in puestos) {
+            if (puesto.estado is EstadoPuesto.Libre) {
+                puestoLibre = puesto
+                break
+            }
+        }
+
+        if (puestoLibre != null) {
+            println("Primer puesto libre: ${puestoLibre.numero}")
+        } else {
+            println("No existen puestos disponibles")
+        }
+    }
+    val historial: MutableList<Consola> = mutableListOf()
+    historial.add(
+        ConsolaClasica(
+            "CC12CD",
+            "Sony",
+            "PlayStation 5",
+            "socio"
+        )
+    )
+
+    historial.add(
+        ConsolaModerna(
+            "CM22TO",
+            "Nintendo",
+            "Switch",
+            "infantil"
+        )
+    )
+    for (consola in historial) {
+        println(
+            "${consola.codigo} - " +
+                    "${consola.marca} ${consola.modelo}"
+        )
+    }
+
 
 }
