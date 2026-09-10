@@ -220,5 +220,66 @@ val consolas: List<Consola> = listOf(
         )
     }
 
+    val tickets: List<Ticket> = listOf(
+        Ticket(
+            1,
+            "CC12CD",
+            "Clasica",
+            75,
+            1200.0
+        ),
+        Ticket(
+            2,
+            "CM22TO",
+            "Moderna",
+            18,
+            0.0
+        ),
+        Ticket(
+            3,
+            "VR44RG",
+            "VR",
+            120,
+            7000.0
+        )
+    )
+    val ticketsVR = tickets.filter { ticket ->
+        ticket.tipoConsola == "VR"
+    }
+
+    println("\nTickets VR:")
+
+    for (ticket in ticketsVR) {
+        println("${ticket.codigoConsola} - ${ticket.monto}")
+    }
+    val codigosAtendidos = tickets.map { ticket ->
+        ticket.codigoConsola
+    }
+
+    println("\nCódigos atendidos:")
+
+    codigosAtendidos.forEach { codigo ->
+        println(codigo)
+    }
+    val recaudacion = tickets.sumOf { ticket ->
+        ticket.monto
+    }
+
+    println("\nRecaudación total: $recaudacion")
+    val disponibles = puestos.count { puesto ->
+        puesto.estado is EstadoPuesto.Libre
+    }
+
+    println("\nPuestos disponibles: $disponibles")
+    val ingresoVR = tickets
+        .filter { ticket ->
+            ticket.tipoConsola == "VR"
+        }
+        .sumOf { ticket ->
+            ticket.monto
+        }
+
+    println("Ingreso generado por VR: $ingresoVR")
+
 
 }
