@@ -1,4 +1,5 @@
 package org.example
+import kotlinx.coroutines.runBlocking
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -280,6 +281,61 @@ val consolas: List<Consola> = listOf(
         }
 
     println("Ingreso generado por VR: $ingresoVR")
+
+    fun main() = runBlocking {
+
+        val puestos = MutableList(10) { indice ->
+            Puesto(indice + 1)
+        }
+
+        val historial = mutableListOf<Ticket>()
+
+        val consola = ConsolaClasica(
+            "CC12CD",
+            "Sony",
+            "PlayStation 5",
+            "socio"
+        )
+
+        println("Estado inicial:")
+        println(describirEstado(puestos[0]))
+
+        println("\n--- ENTRADA ---")
+
+        val entradaCorrecta = registrarEntrada(
+            puestos,
+            consola
+        )
+
+        println("Entrada correcta: $entradaCorrecta")
+
+        println("Estado después de entrada:")
+        println(describirEstado(puestos[0]))
+
+        println("\n--- SALIDA ---")
+
+        val salidaCorrecta = registrarSalida(
+            puestos,
+            "CC12CD",
+            75,
+            historial
+        )
+
+        println("Salida correcta: $salidaCorrecta")
+
+        println("Estado después de salida:")
+        println(describirEstado(puestos[0]))
+
+        println("\n--- HISTORIAL ---")
+
+        for (ticket in historial) {
+            println(
+                "${ticket.codigoConsola} - " +
+                        "${ticket.minutosUso} minutos - " +
+                        "$${ticket.monto}"
+            )
+        }
+    }
 
 
 }
