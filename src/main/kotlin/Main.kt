@@ -336,6 +336,17 @@ val consolas: List<Consola> = listOf(
             )
         }
     }
+    val consolaInvalida = ConsolaClasica(
+        "123ABC",
+        "Sony",
+        "PlayStation 5",
+        "socio"
+    )
+
+    registrarEntrada(
+        puestos,
+        consolaInvalida
+    )
 
 
 }

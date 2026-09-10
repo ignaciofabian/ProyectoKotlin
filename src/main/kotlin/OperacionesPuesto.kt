@@ -5,29 +5,54 @@ suspend fun registrarEntrada(
     consola: Consola
 ): Boolean {
 
-    val puesto = puestos.firstOrNull {
-        it.estado is EstadoPuesto.Libre
-    } ?: return false
+    try {
 
-    println("Registrando entrada en puesto ${puesto.numero}...")
+        // Validar código de consola
+        if (!validarCodigo(consola.codigo)) {
+            throw IllegalArgumentException(
+                "Código de consola inválido: ${consola.codigo}"
+            )
+        }
 
-    puesto.estado = EstadoPuesto.EnProceso(
-        "registrando entrada"
-    )
+        // Buscar puesto libre
+        val puesto = puestos.firstOrNull {
+            it.estado is EstadoPuesto.Libre
+        }
 
-    delay(3000)
+        // Comprobar capacidad
+        if (puesto == null) {
+            println("Error: No existen puestos disponibles")
+            return false
+        }
 
-    puesto.estado = EstadoPuesto.EnJuego(
-        consola
-    )
+        println(
+            "Registrando entrada en puesto ${puesto.numero}..."
+        )
 
-    println(
-        "Entrada registrada. " +
-                "Puesto ${puesto.numero} en juego."
-    )
+        puesto.estado = EstadoPuesto.EnProceso(
+            "registrando entrada"
+        )
 
-    return true
+        delay(3000)
+
+        puesto.estado = EstadoPuesto.EnJuego(
+            consola
+        )
+
+        println(
+            "Entrada registrada. " +
+                    "Puesto ${puesto.numero} en juego."
+        )
+
+        return true
+
+    } catch (e: IllegalArgumentException) {
+
+        println("Error: ${e.message}")
+        return false
+    }
 }
+
 
 suspend fun registrarSalida(
     puestos: MutableList<Puesto>,
@@ -36,49 +61,94 @@ suspend fun registrarSalida(
     historial: MutableList<Ticket>
 ): Boolean {
 
-    val puesto = puestos.firstOrNull { puesto ->
-        val estado = puesto.estado
+    try {
 
-        estado is EstadoPuesto.EnJuego &&
-                estado.consola.codigo == codigo
-    } ?: return false
+        // Validar código
+        if (!validarCodigo(codigo)) {
+            throw IllegalArgumentException(
+                "Código de consola inválido: $codigo"
+            )
+        }
 
-    val estadoActual = puesto.estado
+        // Buscar el puesto donde está jugando esa consola
+        val puesto = puestos.firstOrNull { puesto ->
+            val estado = puesto.estado
 
-    if (estadoActual !is EstadoPuesto.EnJuego) {
+            estado is EstadoPuesto.EnJuego &&
+                    estado.consola.codigo == codigo
+        }
+
+        // Consola no encontrada
+        if (puesto == null) {
+            println("Error: Consola no encontrada")
+            return false
+        }
+
+        // Comprobar que realmente está en juego
+        val estadoActual = puesto.estado
+
+        if (estadoActual !is EstadoPuesto.EnJuego) {
+            println("Error: La consola no está en juego")
+            return false
+        }
+
+        // Guardamos la consola antes de cambiar el estado
+        val consola = estadoActual.consola
+
+        // Validar minutos
+        if (minutos <= 0) {
+            throw IllegalArgumentException(
+                "Los minutos de uso deben ser mayores que cero"
+            )
+        }
+
+        println(
+            "Calculando salida para ${consola.codigo}..."
+        )
+
+        puesto.estado = EstadoPuesto.EnProceso(
+            "calculando tarifa"
+        )
+
+        delay(6500)
+
+        // Calcular tarifa
+        val monto = consola.calcularTarifa(minutos)
+
+        // Validar tarifa
+        if (!validarTarifa(consola, minutos, monto)) {
+
+            puesto.estado = EstadoPuesto.Libre
+
+            throw IllegalArgumentException(
+                "Tarifa inválida: $monto"
+            )
+        }
+
+        // Crear ticket
+        val ticket = Ticket(
+            numero = historial.size + 1,
+            codigoConsola = consola.codigo,
+            tipoConsola = consola::class.simpleName ?: "Desconocida",
+            minutosUso = minutos,
+            monto = monto
+        )
+
+        historial.add(ticket)
+
+        println(
+            "Salida registrada. " +
+                    "Monto: $monto"
+        )
+
+        // Liberar puesto
+        puesto.estado = EstadoPuesto.Libre
+
+        return true
+
+    } catch (e: IllegalArgumentException) {
+
+        println("Error: ${e.message}")
         return false
     }
-
-    val consola = estadoActual.consola
-
-    println(
-        "Calculando salida para ${consola.codigo}..."
-    )
-
-    puesto.estado = EstadoPuesto.EnProceso(
-        "calculando tarifa"
-    )
-
-    delay(6500)
-
-    val monto = consola.calcularTarifa(minutos)
-
-    val ticket = Ticket(
-        numero = historial.size + 1,
-        codigoConsola = consola.codigo,
-        tipoConsola = consola::class.simpleName ?: "Desconocida",
-        minutosUso = minutos,
-        monto = monto
-    )
-
-    historial.add(ticket)
-
-    println(
-        "Salida registrada. " +
-                "Monto: $monto"
-    )
-
-    puesto.estado = EstadoPuesto.Libre
-
-    return true
 }
